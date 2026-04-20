@@ -1,0 +1,9 @@
+pandas
+pyyaml
+numpy
+seaborn
+matplotlib
+scikit-learn
+setuptools
+google-cloud-storage
+-e .

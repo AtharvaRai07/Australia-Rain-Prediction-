@@ -1,0 +1,3 @@
+data_ingestion:
+  bucket_name: "my_bucket_222"
+  bucket_file_name: "data.csv"
