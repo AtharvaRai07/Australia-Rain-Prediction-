@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australia Rain Prediction</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M5.5 13a3 3 0 01-.369-5.98 5 5 0 119.753 1H15a2 2 0 010 4h-4l-.953-2.841A3 3 0 0110 14H6.5z">
+                        </path>
+                    </svg>
+                    <h1 class="text-2xl font-bold text-white">Weather Prediction</h1>
+                </div>
+                <p class="text-blue-100">Australia Rain Forecast</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Panel - Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-blue-500 form-container">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Weather Parameters</h2>
+                    <p class="text-gray-600 mb-8">Enter the weather data to predict if it will rain tomorrow</p>
+
+                    <form id="predictionForm" class="space-y-6">
+                        <!-- Location Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">📍</span> Location
+                            </h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                {% if 'Location' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Location']['label'] }}</label>
+                                    <select name="Location" id="Location"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        required>
+                                        <option value="">Select Australian Location</option>
+                                        {% for option in fields['Location']['options'] %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Temperature Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">🌡️</span> Temperature Data
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% if 'MinTemp' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['MinTemp']['label'] }}</label>
+                                    <input type="number" name="MinTemp" id="MinTemp"
+                                        min="{{ fields['MinTemp']['min'] }}" max="{{ fields['MinTemp']['max'] }}"
+                                        step="{{ fields['MinTemp']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 13.4" required>
+                                </div>
+                                {% endif %}
+                                {% if 'MaxTemp' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['MaxTemp']['label'] }}</label>
+                                    <input type="number" name="MaxTemp" id="MaxTemp"
+                                        min="{{ fields['MaxTemp']['min'] }}" max="{{ fields['MaxTemp']['max'] }}"
+                                        step="{{ fields['MaxTemp']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 22.9" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Temp9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Temp9am']['label'] }}</label>
+                                    <input type="number" name="Temp9am" id="Temp9am"
+                                        min="{{ fields['Temp9am']['min'] }}" max="{{ fields['Temp9am']['max'] }}"
+                                        step="{{ fields['Temp9am']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 16.9" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Temp3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Temp3pm']['label'] }}</label>
+                                    <input type="number" name="Temp3pm" id="Temp3pm"
+                                        min="{{ fields['Temp3pm']['min'] }}" max="{{ fields['Temp3pm']['max'] }}"
+                                        step="{{ fields['Temp3pm']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 21.8" required>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Rainfall & Evaporation Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">💧</span> Rainfall & Evaporation
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {% if 'Rainfall' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Rainfall']['label'] }}</label>
+                                    <input type="number" name="Rainfall" id="Rainfall"
+                                        min="{{ fields['Rainfall']['min'] }}" max="{{ fields['Rainfall']['max'] }}"
+                                        step="{{ fields['Rainfall']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 0.6" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Evaporation' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Evaporation']['label'] }}</label>
+                                    <input type="number" name="Evaporation" id="Evaporation"
+                                        min="{{ fields['Evaporation']['min'] }}"
+                                        max="{{ fields['Evaporation']['max'] }}"
+                                        step="{{ fields['Evaporation']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 5.0" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Sunshine' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Sunshine']['label'] }}</label>
+                                    <input type="number" name="Sunshine" id="Sunshine"
+                                        min="{{ fields['Sunshine']['min'] }}" max="{{ fields['Sunshine']['max'] }}"
+                                        step="{{ fields['Sunshine']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 8.0" required>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Humidity & Pressure Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">💨</span> Humidity & Pressure
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% if 'Humidity9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Humidity9am']['label'] }}</label>
+                                    <input type="number" name="Humidity9am" id="Humidity9am"
+                                        min="{{ fields['Humidity9am']['min'] }}"
+                                        max="{{ fields['Humidity9am']['max'] }}"
+                                        step="{{ fields['Humidity9am']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 71" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Humidity3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Humidity3pm']['label'] }}</label>
+                                    <input type="number" name="Humidity3pm" id="Humidity3pm"
+                                        min="{{ fields['Humidity3pm']['min'] }}"
+                                        max="{{ fields['Humidity3pm']['max'] }}"
+                                        step="{{ fields['Humidity3pm']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 22" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Pressure9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Pressure9am']['label'] }}</label>
+                                    <input type="number" name="Pressure9am" id="Pressure9am"
+                                        min="{{ fields['Pressure9am']['min'] }}"
+                                        max="{{ fields['Pressure9am']['max'] }}"
+                                        step="{{ fields['Pressure9am']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 1007.7" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Pressure3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Pressure3pm']['label'] }}</label>
+                                    <input type="number" name="Pressure3pm" id="Pressure3pm"
+                                        min="{{ fields['Pressure3pm']['min'] }}"
+                                        max="{{ fields['Pressure3pm']['max'] }}"
+                                        step="{{ fields['Pressure3pm']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 1007.1" required>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Wind Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">💨</span> Wind Data
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% if 'WindGustDir' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindGustDir']['label'] }}</label>
+                                    <select name="WindGustDir" id="WindGustDir"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        required>
+                                        <option value="">Select Wind Direction</option>
+                                        {% for option in fields['WindGustDir']['options'] %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                                {% if 'WindGustSpeed' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindGustSpeed']['label'] }}</label>
+                                    <input type="number" name="WindGustSpeed" id="WindGustSpeed"
+                                        min="{{ fields['WindGustSpeed']['min'] }}"
+                                        max="{{ fields['WindGustSpeed']['max'] }}"
+                                        step="{{ fields['WindGustSpeed']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 44" required>
+                                </div>
+                                {% endif %}
+                                {% if 'WindDir9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindDir9am']['label'] }}</label>
+                                    <select name="WindDir9am" id="WindDir9am"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        required>
+                                        <option value="">Select Wind Direction</option>
+                                        {% for option in fields['WindDir9am']['options'] %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                                {% if 'WindSpeed9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindSpeed9am']['label'] }}</label>
+                                    <input type="number" name="WindSpeed9am" id="WindSpeed9am"
+                                        min="{{ fields['WindSpeed9am']['min'] }}"
+                                        max="{{ fields['WindSpeed9am']['max'] }}"
+                                        step="{{ fields['WindSpeed9am']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 20" required>
+                                </div>
+                                {% endif %}
+                                {% if 'WindDir3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindDir3pm']['label'] }}</label>
+                                    <select name="WindDir3pm" id="WindDir3pm"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        required>
+                                        <option value="">Select Wind Direction</option>
+                                        {% for option in fields['WindDir3pm']['options'] %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                                {% if 'WindSpeed3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['WindSpeed3pm']['label'] }}</label>
+                                    <input type="number" name="WindSpeed3pm" id="WindSpeed3pm"
+                                        min="{{ fields['WindSpeed3pm']['min'] }}"
+                                        max="{{ fields['WindSpeed3pm']['max'] }}"
+                                        step="{{ fields['WindSpeed3pm']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 24" required>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Cloud & Rain Section -->
+                        <div class="section-divider">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <span class="section-icon">☁️</span> Cloud Cover & Rain
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% if 'Cloud9am' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Cloud9am']['label'] }}</label>
+                                    <input type="number" name="Cloud9am" id="Cloud9am"
+                                        min="{{ fields['Cloud9am']['min'] }}" max="{{ fields['Cloud9am']['max'] }}"
+                                        step="{{ fields['Cloud9am']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 8" required>
+                                </div>
+                                {% endif %}
+                                {% if 'Cloud3pm' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['Cloud3pm']['label'] }}</label>
+                                    <input type="number" name="Cloud3pm" id="Cloud3pm"
+                                        min="{{ fields['Cloud3pm']['min'] }}" max="{{ fields['Cloud3pm']['max'] }}"
+                                        step="{{ fields['Cloud3pm']['step'] }}"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        placeholder="e.g., 0" required>
+                                </div>
+                                {% endif %}
+                                {% if 'RainToday' in fields %}
+                                <div class="form-group">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                                        fields['RainToday']['label'] }}</label>
+                                    <select name="RainToday" id="RainToday"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 transition input-field"
+                                        required>
+                                        <option value="">Select Rain Status</option>
+                                        {% for option in fields['RainToday']['options'] %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex gap-4 mt-10">
+                            <button type="submit" id="predictBtn"
+                                class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-6 rounded-lg hover:shadow-lg transform hover:scale-105 transition duration-200 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M7 2a1 1 0 011 1v1h4V3a1 1 0 011-1h2a1 1 0 011 1v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v4h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2a1 1 0 01-1-1v-1h-4v1a1 1 0 01-1 1H7a2 2 0 01-2-2v-2H4a1 1 0 110-2h1V9H4a1 1 0 010-2h1V5a2 2 0 012-2h2V3a1 1 0 011-1zm0 5a1 1 0 011 1v1h1a1 1 0 110 2H8v1a1 1 0 11-2 0v-1H5a1 1 0 110-2h1V8a1 1 0 011-1z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                Predict Now
+                            </button>
+                            <button type="reset"
+                                class="px-6 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition duration-200">
+                                Clear
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Panel - Results & Info -->
+            <div class="lg:col-span-1">
+                <!-- Result Card -->
+                <div id="resultCard"
+                    class="hidden bg-white rounded-2xl shadow-xl p-8 border-t-4 border-green-500 result-card">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Prediction Result</h3>
+
+                    <div id="resultContent" class="space-y-6">
+                        <div class="text-center">
+                            <div id="rainStatus" class="text-6xl mb-4"></div>
+                            <div id="predictionText" class="text-3xl font-bold text-gray-800 mb-2"></div>
+                            <p class="text-gray-600">Tomorrow's Weather</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-gray-700 font-medium">Confidence Level</span>
+                                <span id="confidenceValue" class="text-2xl font-bold text-blue-600"></span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div id="confidenceBar"
+                                    class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <p class="text-sm text-blue-800">
+                                <span class="font-semibold">💡 Tip:</span> This prediction is based on weather patterns
+                                and historical data. Always check official weather forecasts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Card -->
+                <div id="loadingCard" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+                    <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+                    <p class="text-gray-700 font-medium">Predicting weather...</p>
+                </div>
+
+                <!-- Error Card -->
+                <div id="errorCard" class="hidden bg-white rounded-2xl shadow-xl p-8 border-t-4 border-red-500">
+                    <h3 class="text-xl font-bold text-red-600 mb-4">Error</h3>
+                    <p id="errorMessage" class="text-gray-700 text-sm mb-4"></p>
+                    <button onclick="document.getElementById('errorCard').classList.add('hidden')"
+                        class="text-red-600 hover:text-red-800 font-medium text-sm">Dismiss</button>
+                </div>
+
+                <!-- Info Card -->
+                <div id="infoCard"
+                    class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-xl p-8 border-t-4 border-purple-500 mt-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📊 About This Model</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-600 font-bold">✓</span>
+                            <span>Trained on Australian weather data</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-600 font-bold">✓</span>
+                            <span>Uses machine learning algorithms</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-600 font-bold">✓</span>
+                            <span>Analyzes 22 weather parameters</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-purple-600 font-bold">✓</span>
+                            <span>Provides confidence scores</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Australia Rain Prediction Model. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">Powered by Machine Learning & Flask</p>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
