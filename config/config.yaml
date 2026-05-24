@@ -1,3 +1,9 @@
 data_ingestion:
   bucket_name: "my_bucket_222"
   bucket_file_name: "data.csv"
+
+data_preprocessing:
+  test_size: 0.2
+  random_state: 42
+  target_column: "RainTomorrow"
+

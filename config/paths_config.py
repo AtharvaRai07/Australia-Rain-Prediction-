@@ -16,3 +16,5 @@ Y_TEST_PATH = os.path.join(TRANSFORMED_DATA_DIR, "y_test.csv")
 
 LABEL_ENCODER_FILE_PATH = os.path.join(TRANSFORMED_DATA_DIR, "label_encoder.pkl")
 SCALER_FILE_PATH = os.path.join(TRANSFORMED_DATA_DIR, "scaler.pkl")
+
+
