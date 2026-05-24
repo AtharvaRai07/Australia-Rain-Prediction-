@@ -6,4 +6,6 @@ matplotlib
 scikit-learn
 setuptools
 google-cloud-storage
+ipykernel
+xgboost
 -e .
