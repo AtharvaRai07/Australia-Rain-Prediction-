@@ -44,7 +44,7 @@ jobs:
 
             - name: GKE Configuration
               run: |
-                gcloud container clusters get-credentials $GKE_CLUSTER --region $GKE_REGION --project
+                gcloud container clusters get-credentials $GKE_CLUSTER --region $GKE_REGION --project $PROJECT_ID
 
             - name: Deploy to GKE
               run: |
