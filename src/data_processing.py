@@ -7,7 +7,7 @@ from pyparsing import col
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from utils.common_functions import read_yaml
+from utils.common_functions import read_yaml, read_csv
 from config.paths_config import *
 from src.logger import logging
 from src.exception import CustomException
@@ -28,7 +28,7 @@ class DataProcessing:
     def load_data(self):
         try:
             logging.info(f"Loading data from {self.input_file}")
-            data = pd.read_csv(self.input_file)
+            data = read_csv(self.input_file)
             logging.info(f"Data loaded successfully with shape {data.shape}")
             return data
         except Exception as e:
