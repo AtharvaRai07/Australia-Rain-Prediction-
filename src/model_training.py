@@ -76,10 +76,10 @@ class ModelTrainer:
             joblib.dump(model, MODEL_FILE_PATH)
 
             with open(MODEL_TEST_RESULT, "w") as f:
-                f.write(f"Accuracy: {accuarcy:.2f}\n")
-                f.write(f"Recall: {recall:.2f}\n")
-                f.write(f"Precision: {precision:.2f}\n")
-                f.write(f"F1 Score: {f1:.2f}\n")
+                f.write(f"Accuracy: {accuarcy}\n")
+                f.write(f"Recall: {recall}\n")
+                f.write(f"Precision: {precision}\n")
+                f.write(f"F1 Score: {f1}\n")
                 f.write(f"Classification Report:\n{report}\n")
 
             logging.info(f"Model saved successfully at {MODEL_FILE_PATH} and evaluation results saved at {MODEL_TEST_RESULT}")
