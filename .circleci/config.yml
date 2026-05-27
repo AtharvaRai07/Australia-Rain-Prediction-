@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Build and Push Docker Image
           command: |
+            curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
             docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-repo/mlops-app:latest .
             docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-repo/mlops-app:latest
 
@@ -66,3 +67,4 @@ workflows:
       - deploy_to_gke:
           requires:
             - build_docker_image
+
