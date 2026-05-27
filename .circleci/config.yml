@@ -1,0 +1,67 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: google-cloud-sdk:latest
+    working_directory: ~/repo
+
+jobs:
+  checkout_code:
+    executor: docker-executor
+    steps:
+      - checkout
+
+  build_docker_image:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Authenticate with Google Cloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY | base64 --decode > gcp_key.json
+            gcloud auth activate-service-account --key-file=gcp_key.json
+            gcloud auth configure-docker us-central1-docker.pkg.dev || gcloud auth configure-docker
+
+      - run:  
+          name: Build and Push Docker Image
+          command: |
+            docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-repo/mlops-app:latest .
+            docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/my-repo/mlops-app:latest
+
+  deploy_to_gke:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Authenticate with Google Cloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY | base64 --decode > gcp_key.json
+            gcloud auth activate-service-account --key-file=gcp_key.json
+            gcloud container clusters get-credentials my-cluster --region us-central1 --project $GOOGLE_PROJECT_ID
+
+
+      - run:
+          name: Configure GKE
+          command: |
+            gcloud container clusters get-credentials $GKE_CLUSTER --zone $GOOGLE_ZONE --project $GOOGLE_PROJECT_ID
+
+      - run:
+          name: Deploy to GKE
+          command: |
+            kubectl apply -f kubernetes-deployment.yaml
+
+
+workflows:
+  version: 2
+  deploy_pipeline:
+    jobs:
+      - checkout_code
+      - build_docker_image:
+          requires:
+            - checkout_code
+      - deploy_to_gke:
+          requires:
+            - build_docker_image

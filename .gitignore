@@ -2,3 +2,5 @@
 logs
 __pycache__
 gcp-key.json
+.github\workflows\deploy.yml
+.github
